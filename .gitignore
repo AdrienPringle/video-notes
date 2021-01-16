@@ -3,6 +3,7 @@
 
 # testing
 /coverage
+/public/video.mp4
 
 # production
 /build
