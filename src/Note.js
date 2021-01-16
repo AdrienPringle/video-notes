@@ -6,10 +6,11 @@ class Note extends Component {
 	//{ startTime, setObj, remove, changeNote }
 	constructor(props) {
 		super(props);
+		const { isEdit, content, startTime, endTime, startPosition } = this.props;
 		this.state = {
-			isEdit: true,
-			content: "",
-			duration: 5,
+			isEdit: isEdit,
+			content: content,
+			duration: endTime - startTime || 5,
 		};
 
 		this.toggleEdit = this.toggleEdit.bind(this);
@@ -39,23 +40,29 @@ class Note extends Component {
 
 		const { isEdit, duration, content } = this.state;
 		const { startTime, changeNote } = this.props;
-		this.setState({ isEdit: !isEdit });
+		const newEdit = !isEdit;
+		this.setState({ isEdit: newEdit });
 
 		changeNote({
 			startTime: startTime,
 			endTime: startTime + duration,
 			content: content,
+			isEdit: newEdit,
 		});
 	}
 	handleStop(event) {
 		this.props.changeNote();
 	}
 	render() {
-		const { startTime, setObj, remove, changeNote } = this.props;
+		const { startTime, setObj, remove, changeNote, startPosition } = this.props;
 		const { isEdit, duration, content } = this.state;
 
 		return isEdit ? (
-			<Draggable onStop={this.handleStop} bounds="parent">
+			<Draggable
+				onStop={this.handleStop}
+				bounds="parent"
+				defaultPosition={startPosition}
+			>
 				<form onSubmit={this.toggleEdit} className="video-note">
 					<label htmlFor="noteContent">note</label>
 					<br />
@@ -81,7 +88,11 @@ class Note extends Component {
 				</form>
 			</Draggable>
 		) : (
-			<Draggable onStop={this.handleStop} bounds="parent">
+			<Draggable
+				onStop={this.handleStop}
+				bounds="parent"
+				defaultPosition={startPosition}
+			>
 				<div className="video-note">
 					<h2>
 						{this.formatTime(startTime)}-{this.formatTime(startTime + duration)}

@@ -9,8 +9,15 @@ class VideoNotes extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { notes: [], iterator: 0, videoBox: {} };
+		let { videoEl } = props;
+		this.state = { notes: [], iterator: 0, videoBox: {}, videoTime: 0 };
 		this.refs = {};
+
+		this.props.videoEl.ontimeupdate = (() => {
+			this.setState({ videoTime: videoEl.currentTime });
+		}).bind(this);
+
+		this.isNoteVisible = this.isNoteVisible.bind(this);
 	}
 
 	//  addNote = useCallback(() => {
@@ -21,7 +28,10 @@ class VideoNotes extends Component {
 	addNote = () => {
 		const { notes, iterator } = this.state;
 		const { videoEl } = this.props;
-		let newNotes = [...notes, { id: iterator, startTime: videoEl.currentTime }];
+		let newNotes = [
+			...notes,
+			{ id: iterator, startTime: videoEl.currentTime, isEdit: true },
+		];
 		this.setState({ notes: newNotes, iterator: iterator + 1 });
 	};
 
@@ -45,7 +55,6 @@ class VideoNotes extends Component {
 			position: this.getRelativeBox(parentBox, childBox),
 		};
 		this.setState({ notes: newNotes });
-		// setNotes(notes);
 	};
 
 	editSelfNote(id, key, value) {
@@ -74,17 +83,33 @@ class VideoNotes extends Component {
 			y: this.getRelativePosition(parentY, parentHeight, childY, childHeight),
 		};
 	}
+	getDefaultPosition(parentBox, position) {
+		if (!position) return undefined;
+		return {
+			x: position.x * (parentBox.width - 40),
+			y: position.y * (parentBox.height - 40),
+		};
+	}
+
 	getRelativePosition(parentStart, parentSize, childStart, childSize) {
 		const start = childStart - parentStart;
 		const size = parentSize - childSize;
 		return start / size;
 	}
 
-	render() {
-		let { notes } = this.state;
-		let { videoEl } = this.props;
+	isNoteVisible(note) {
+		let { videoTime } = this.state;
+		if (!("startTime" in note && "endTime" in note)) return true;
+		if (note.isEdit) return true;
+		return videoTime >= note.startTime - 1 && videoTime <= note.endTime + 1;
+	}
 
-		let { top, left, width, height } = videoEl.getBoundingClientRect();
+	render() {
+		const { notes } = this.state;
+		const { videoEl } = this.props;
+
+		const videoBox = videoEl.getBoundingClientRect();
+		let { top, left, width, height } = videoBox;
 		let style = {
 			top: top + "px",
 			left: left + "px",
@@ -97,10 +122,14 @@ class VideoNotes extends Component {
 				<button className="add-notes-button" onClick={this.addNote}>
 					+
 				</button>
-				{notes.map((e) => (
+				{notes.filter(this.isNoteVisible).map((e) => (
 					<Note
 						key={e.id}
 						startTime={e.startTime}
+						endTime={e.endTime}
+						content={e.content}
+						isEdit={e.isEdit}
+						startPosition={this.getDefaultPosition(videoBox, e.position)}
 						setObj={e}
 						remove={() => this.removeNote(e.id)}
 						changeNote={(content) => this.setSelfNote(e.id, content)}
