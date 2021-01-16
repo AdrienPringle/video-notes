@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect, useCallback } from "react";
+
 import Draggable from "react-draggable";
 
 class Note extends Component {
@@ -12,6 +13,7 @@ class Note extends Component {
 		};
 
 		this.toggleEdit = this.toggleEdit.bind(this);
+		this.handleStop = this.handleStop.bind(this);
 	}
 
 	// const [isEdit, setIsEdit] = useState(true);
@@ -45,13 +47,15 @@ class Note extends Component {
 			content: content,
 		});
 	}
-
+	handleStop(event) {
+		this.props.changeNote();
+	}
 	render() {
 		const { startTime, setObj, remove, changeNote } = this.props;
 		const { isEdit, duration, content } = this.state;
 
 		return isEdit ? (
-			<Draggable>
+			<Draggable onStop={this.handleStop} bounds="parent">
 				<form onSubmit={this.toggleEdit} className="video-note">
 					<label htmlFor="noteContent">note</label>
 					<br />
@@ -77,7 +81,7 @@ class Note extends Component {
 				</form>
 			</Draggable>
 		) : (
-			<Draggable>
+			<Draggable onStop={this.handleStop} bounds="parent">
 				<div className="video-note">
 					<h2>
 						{this.formatTime(startTime)}-{this.formatTime(startTime + duration)}
