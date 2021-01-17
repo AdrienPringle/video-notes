@@ -1,19 +1,41 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link rel="stylesheet" href="popup.css" />
-	</head>
-	<body>
-		<form>
-			<label for="videoUrl">video url </label>
-			<input type="text" name="videoUrl" /><br /><br />
-			<label for="noteText">note</label>
-			<input type="text" name="noteText" /><br /><br />
-			<label for="startTime">start time</label>
-			<input type="number" name="startTime" /><br /><br />
-			<label for="endTime">end time</label>
-			<input type="number" name="endTime" /><br /><br />
-			<input type="submit" value="add note" />
-		</form>
-	</body>
+  <head>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <form>
+      <label for="videoUrl">Video Url: </label>
+      <textarea class="form-control" id="vidurl"></textarea>
+
+      <br /><br />
+      <label for="noteText">Note:</label><br />
+      <textarea class="form-control" id="note-value"></textarea>
+
+      <br /><br />
+      <label for="startTime">Start time:</label>
+      <input type="number" name="startTime" id="startField" /><br /><br />
+
+      <label for="endTime">End time:</label><br />
+      <input type="number" name="endTime" id="endField" /><br /><br />
+
+      <button class="btn create" id="create">Create</button>
+      <br />
+
+      <div id="notes-container">
+        <h3>Existing Notes</h3>
+
+        <ul id="notes">
+          <!--<ul id="notes2"></ul>-->
+        </ul>
+
+        <h4>Delete All Notes</h4>
+        <button class="btn delete" id="delete">Delete All</button>
+        <h4>Clear Page's Notes</h4>
+        <button class="btn clear" id="clear">Clear Page</button>
+      </div>
+
+      <script src="popup.js"></script>
+    </form>
+  </body>
 </html>

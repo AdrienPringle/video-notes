@@ -13,25 +13,27 @@ app.id = "root";
 
 let noteData = {};
 
-function setNoteData(src, data) {
+const setNoteData = (src, data) => {
 	//Save the data to local storage
 	var dataObj = {};
 	dataObj[src] = data;
-	chrome.storage.local.set(dataObj, function () {
+	chrome.storage.sync.set(dataObj, function () {
 		if (!chrome.runtime.lastError) {
 			console.log("Saved", src, data);
 		}
 	});
 }
-async function getNoteData(src) {
+
+
+const getNoteData = async(src) => {
 	// return noteData[src];
 	return new Promise((resolve, reject) => {
-		chrome.storage.local.get(src, function (result) {
+		chrome.storage.sync.get(src, function (result) {
 			console.log("returned data for " + src);
 			resolve(result[src]);
 		});
 	});
-}
+};
 
 window.addEventListener("load", function () {
 	if (viewport) viewport.prepend(app);
