@@ -16,9 +16,9 @@ class Note extends Component {
 		this.toggleEdit = this.toggleEdit.bind(this);
 		this.handleStop = this.handleStop.bind(this);
 	}
-	componentDidMount() {
-		this.contentRef && this.contentRef.focus();
-	}
+	// componentDidMount() {
+	// 	this.contentRef && this.contentRef.focus();
+	// }
 	// const [isEdit, setIsEdit] = useState(true);
 	// const [content, setContent] = useState("");
 	// const [duration, setDuration] = useState(5);
