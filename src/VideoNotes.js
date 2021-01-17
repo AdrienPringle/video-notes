@@ -11,12 +11,13 @@ class VideoNotes extends Component {
 		super(props);
 		let { videoEl, data } = props;
 
-		const initialNotes = data.notes
-			? data.notes.map((n) => ({ isEdit: false, ...n }))
-			: [];
+		const initialNotes =
+			data && data.notes
+				? data.notes.map((n) => ({ isEdit: false, ...n }))
+				: [];
 		this.state = {
 			notes: initialNotes,
-			iterator: data.iterator || 0,
+			iterator: (data && data.notes && data.iterator) || 0,
 			videoBox: {},
 			videoTime: 0,
 		};

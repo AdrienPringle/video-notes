@@ -17,7 +17,7 @@ function setNoteData(src, data) {
 	//Save the data to local storage
 	var dataObj = {};
 	dataObj[src] = data;
-	chrome.storage.local.sync(dataObj, function () {
+	chrome.storage.local.set(dataObj, function () {
 		if (!chrome.runtime.lastError) {
 			console.log("Saved", src, data);
 		}
@@ -26,7 +26,7 @@ function setNoteData(src, data) {
 async function getNoteData(src) {
 	// return noteData[src];
 	return new Promise((resolve, reject) => {
-		chrome.storage.local.sync(src, function (result) {
+		chrome.storage.local.get(src, function (result) {
 			console.log("returned data for " + src);
 			resolve(result[src]);
 		});
