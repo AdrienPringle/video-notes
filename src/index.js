@@ -25,7 +25,6 @@ const setNoteData = (src, data) => {
 	});
 }
 
-
 const getNoteData = async(src) => {
 	// return noteData[src];
 	return new Promise((resolve, reject) => {
