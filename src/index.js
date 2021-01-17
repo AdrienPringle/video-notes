@@ -3,26 +3,39 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import VideoNotes from "./VideoNotes";
 
-// Get the element to prepend our app to. This could be any element on a specific website or even just `document.body`.
-// const viewport = document.getElementById('viewport');
-
 // Create a div to render the <App /> component to.
+const viewport = document.getElementById("viewport");
 const app = document.createElement("div");
-
-// Set the app element's id to `root`. This is the same as the element that create-react-app renders to by default so it will work on the local server too.
 app.id = "root";
 
-// document.querySelector("div").appendChild(app);
+let noteData = {};
+
+function setNoteData(src, data) {
+	noteData[src] = data;
+	console.log(data);
+	// do something here to insert data to backend
+}
+function getNoteData(src) {
+	return noteData[src];
+}
+
 window.addEventListener("load", function () {
+	if (viewport) viewport.prepend(app);
+
 	const videos = document.querySelectorAll("video");
 
-	// Prepend the <App /> component to the viewport element if it exists. You could also use `appendChild` depending on your needs.
-	// if (viewport) viewport.prepend(app);
-
-	// Render the <App /> component.
 	const container = document.createElement("div");
 	app.appendChild(container);
-	videos.forEach((v) => ReactDOM.render(<VideoNotes videoEl={v} />, container));
+	videos.forEach((v) => {
+		const src = v.src;
+		if (!(src in noteData)) noteData[src] = {};
+
+		//render notes for every video
+		ReactDOM.render(
+			<VideoNotes videoEl={v} setData={(data) => setNoteData(src, data)} />,
+			container
+		);
+	});
 	console.log("added videos ", videos);
 });
 

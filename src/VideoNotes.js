@@ -13,34 +13,47 @@ class VideoNotes extends Component {
 		this.state = { notes: [], iterator: 0, videoBox: {}, videoTime: 0 };
 		this.refs = {};
 
-		this.props.videoEl.ontimeupdate = (() => {
+		this.props.videoEl.ontimeupdate = () => {
 			this.setState({ videoTime: videoEl.currentTime });
-		}).bind(this);
+		};
 
 		this.isNoteVisible = this.isNoteVisible.bind(this);
 	}
 
-	//  addNote = useCallback(() => {
-	// 	setNotes([...notes, { id: iterator }]);
-	// 	setIterator(iterator + 1);
-	// }, [iterator, notes]);
+	getFormattedData = () => {
+		const { iterator, notes } = this.state;
+		return {
+			iterator: iterator,
+			notes: notes.map((n) => {
+				const { id, content, startTime, endTime, position } = n;
+				return { id, content, startTime, endTime, position };
+			}),
+		};
+	};
 
 	addNote = () => {
 		const { notes, iterator } = this.state;
-		const { videoEl } = this.props;
+		const { videoEl, setData } = this.props;
 		let newNotes = [
 			...notes,
 			{ id: iterator, startTime: videoEl.currentTime, isEdit: true },
 		];
-		this.setState({ notes: newNotes, iterator: iterator + 1 });
+		this.setState({ notes: newNotes, iterator: iterator + 1 }, () =>
+			setData(this.getFormattedData())
+		);
 	};
 
 	removeNote = (id) => {
-		this.setState({ notes: this.state.notes.filter((n) => n.id != id) });
+		const { setData } = this.props;
+		this.setState({ notes: this.state.notes.filter((n) => n.id != id) }, () =>
+			setData(this.getFormattedData())
+		);
 	};
 
 	setSelfNote = (id, content) => {
 		let { notes } = this.state;
+		const { setData } = this.props;
+
 		const i = notes.findIndex((e) => e.id == id);
 		let newNotes = [...notes];
 
@@ -54,16 +67,16 @@ class VideoNotes extends Component {
 			id,
 			position: this.getRelativeBox(parentBox, childBox),
 		};
-		this.setState({ notes: newNotes });
+		this.setState({ notes: newNotes }, () => setData(this.getFormattedData()));
 	};
 
-	editSelfNote(id, key, value) {
-		let { notes } = this.state;
-		const i = notes.findIndex((e) => e.id == id);
-		let newNotes = [...notes];
-		newNotes[i][key] = value;
-		this.setState({ notes: newNotes });
-	}
+	// editSelfNote(id, key, value) {
+	// 	let { notes } = this.state;
+	// 	const i = notes.findIndex((e) => e.id == id);
+	// 	let newNotes = [...notes];
+	// 	newNotes[i][key] = value;
+	// 	this.setState({ notes: newNotes });
+	// }
 
 	getRelativeBox(parentBox, childBox) {
 		const {
@@ -119,9 +132,20 @@ class VideoNotes extends Component {
 
 		return (
 			<div className="video-notes-wrapper" style={style}>
-				<button className="add-notes-button" onClick={this.addNote}>
-					+
-				</button>
+				<div className="notes-controls">
+					<button className="add-notes-button" onClick={this.addNote}>
+						+
+					</button>
+					<button
+						className="add-notes-button"
+						onClick={() => {
+							console.log(notes, this.refs);
+						}}
+					>
+						view notes
+					</button>
+				</div>
+
 				{notes.filter(this.isNoteVisible).map((e) => (
 					<Note
 						key={e.id}
@@ -138,12 +162,6 @@ class VideoNotes extends Component {
 						}}
 					/>
 				))}
-				<button
-					className="add-notes-button"
-					onClick={() => console.log(notes, this.refs)}
-				>
-					view notes
-				</button>
 			</div>
 		);
 	}
