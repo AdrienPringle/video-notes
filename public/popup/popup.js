@@ -51,47 +51,47 @@ getUrl().then(({ url, id: tabId }) => {
 		}
 	});
 
-	//notesField.focus();
+	// notesField.focus();
 
-	// Clear Page Notes
-	clearNotes.onclick = function () {
-		chrome.storage.sync.get(url, (notes) => {
-			notes[url] = [];
-			chrome.storage.sync.set(notes);
-			chrome.tabs.sendMessage(
-				tabs[0].id,
-				{ notes: notes[url], action: "clear" },
-				(_) => {
-					console.log("Cleared page");
-					location.reload();
-				}
-			);
-		});
-	};
+	// 	// Clear Page Notes
+	// 	clearNotes.onclick = function () {
+	// 		chrome.storage.sync.get(url, (notes) => {
+	// 			notes[url] = [];
+	// 			chrome.storage.sync.set(notes);
+	// 			chrome.tabs.sendMessage(
+	// 				tabs[0].id,
+	// 				{ notes: notes[url], action: "clear" },
+	// 				(_) => {
+	// 					console.log("Cleared page");
+	// 					location.reload();
+	// 				}
+	// 			);
+	// 		});
+	// 	};
 
-	// Delete All Notes
-	deleteNotes.onclick = function () {
-		chrome.storage.sync.get(url, (notes) => {
-			const keys = Object.keys(notes);
-			notes[url] = [];
-			chrome.storage.sync.clear();
+	// 	// Delete All Notes
+	// 	deleteNotes.onclick = function () {
+	// 		chrome.storage.sync.get(url, (notes) => {
+	// 			const keys = Object.keys(notes);
+	// 			notes[url] = [];
+	// 			chrome.storage.sync.clear();
 
-			// for(var j = 0; j < keys.length; j++){
-			//   let url = tabs[j].url;
-			//   chrome.extension.getBackgroundPage().console.log("notes",notes);
-			//   notes = []
-			// }
-			//chrome.storage.sync.set(notes);
-			chrome.tabs.sendMessage(
-				tabs[0].id,
-				{ notes: notes[url], action: "clear" },
-				(_) => {
-					console.log("Cleared page");
-					location.reload();
-				}
-			);
-		});
-	};
+	// 			// for(var j = 0; j < keys.length; j++){
+	// 			//   let url = tabs[j].url;
+	// 			//   chrome.extension.getBackgroundPage().console.log("notes",notes);
+	// 			//   notes = []
+	// 			// }
+	// 			//chrome.storage.sync.set(notes);
+	// 			chrome.tabs.sendMessage(
+	// 				tabs[0].id,
+	// 				{ notes: notes[url], action: "clear" },
+	// 				(_) => {
+	// 					console.log("Cleared page");
+	// 					location.reload();
+	// 				}
+	// 			);
+	// 		});
+	// 	};
 
 	// Save Note
 	createNote.onclick = function () {
@@ -130,13 +130,13 @@ getUrl().then(({ url, id: tabId }) => {
 			chrome.storage.sync.set(dataObj, function () {
 				if (!chrome.runtime.lastError) {
 					console.log("Saved", url, data);
+					chrome.tabs.sendMessage(tabId, { url: url, action: "add" }, (_) => {
+						console.log("Added Note at url: '" + url);
+						location.reload();
+					});
 				}
 			});
 
-			chrome.tabs.sendMessage(tabId, { url: url, action: "add" }, (_) => {
-				console.log("Added Note at url: '" + url);
-				// location.reload();
-			});
 			// location.reload();
 		});
 	};

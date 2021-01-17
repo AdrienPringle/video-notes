@@ -72,6 +72,7 @@ window.addEventListener("load", function () {
 		console.log(request, sender);
 		if (request.action == "add" && request.url == window.location.href) {
 			render();
+			console.log("rerendered");
 			sendResponse({ farewell: "goodbye" });
 		}
 	});
