@@ -5,7 +5,7 @@
 	"permissions": ["tabs", "activeTab", "declarativeContent", "storage"],
 	"content_scripts": [
 		{
-			"matches": ["<all_urls>"],
+			"matches": ["https://*/*"],
 			"css": ["/static/css/main.css"],
 			"js": ["/static/js/main.js"]
 		}

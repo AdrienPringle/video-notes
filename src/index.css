@@ -1,6 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Quattrocento+Sans&display=swap");
+
+#root {
+	font-family: "Quattrocento Sans", sans-serif;
+}
+
 .video-notes-wrapper {
 	/* background-color: #7700ff20; */
-	border: 2px solid green;
 
 	position: absolute;
 	pointer-events: none;
@@ -24,14 +29,109 @@
 .add-notes-button {
 	width: 40px;
 	height: 40px;
+	font-size: 16px;
+	line-height: 16px;
+	border-radius: 50%;
+	border: none;
 	text-align: center;
+	background: linear-gradient(
+		45deg,
+		rgba(78, 104, 189, 2) 7%,
+		rgba(178, 121, 226, 2) 100%
+	);
+	color: white;
 }
-
+.add-notes-button:before {
+	content: "";
+	margin-left: -100%;
+}
+.add-notes-button:after {
+	content: "";
+	margin-right: -100%;
+}
 .video-note {
-	border: 2px solid red;
-	width: 100px;
-	height: 100px;
-	background-color: #836d6d20;
+	background-color: white;
+	border-radius: 10px;
+	width: 180px;
+
+	box-shadow: 0 0 10px black;
 
 	position: absolute;
+	box-sizing: content-box;
+}
+
+.content-input {
+	font-size: 14px;
+	white-space: pre;
+	box-sizing: border-box;
+	background-color: rgba(185, 191, 248, 0.47);
+	border-radius: 10px;
+	border: none;
+	font-family: "Quattrocento Sans", sans-serif;
+	padding: 10px;
+	padding-bottom: 0px;
+	width: 180px;
+	height: 180px;
+	overflow: scroll;
+}
+div.content-input {
+	margin-bottom: 4px;
+	background: linear-gradient(
+			rgba(185, 191, 248, 0.47),
+			rgba(185, 191, 248, 0.47)
+		),
+		linear-gradient(rgba(185, 191, 248, 0.47), rgba(185, 191, 248, 0.47)),
+		linear-gradient(rgba(185, 191, 248, 0.47), rgba(185, 191, 248, 0.47)),
+		linear-gradient(
+			20deg,
+			rgba(78, 104, 189, 2) 7%,
+			rgba(178, 121, 226, 2) 100%
+		);
+}
+.clickable:hover > .content-input {
+	box-shadow: inset 0 -5px 10px -10px black;
+}
+.time-input {
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: 2px;
+}
+.time-input > * {
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.number-input {
+	width: 30px;
+	padding: 0px;
+	border: none;
+	border-bottom: 1px solid rgba(37, 56, 233, 0.55);
+	margin-right: 10px;
+	box-sizing: border-box;
+}
+
+.purple {
+	color: rgba(37, 56, 233, 0.55);
+}
+
+.dialogue-button {
+	/* width: 100%; */
+	padding-left: 3px;
+	padding-right: 3px;
+
+	margin-left: 7px;
+	margin-right: 7px;
+
+	float: right;
+
+	color: #8792f3;
+	background-color: white;
+	border: none;
+	border-radius: 3px;
+}
+
+.dialogue-button:hover {
+	background-color: #00000020;
 }

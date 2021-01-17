@@ -110,8 +110,8 @@ class VideoNotes extends Component {
 	getDefaultPosition(parentBox, position) {
 		if (!position) return undefined;
 		return {
-			x: position.x * (parentBox.width - 40),
-			y: position.y * (parentBox.height - 40),
+			x: position.x * (parentBox.width - 180),
+			y: position.y * (parentBox.height - 202),
 		};
 	}
 
@@ -145,16 +145,16 @@ class VideoNotes extends Component {
 			<div className="video-notes-wrapper" style={style}>
 				<div className="notes-controls">
 					<button className="add-notes-button" onClick={this.addNote}>
-						+
+						＋
 					</button>
-					<button
+					{/* <button
 						className="add-notes-button"
 						onClick={() => {
 							console.log(notes, this.refs);
 						}}
 					>
 						view notes
-					</button>
+					</button> */}
 				</div>
 
 				{notes.filter(this.isNoteVisible).map((e) => (

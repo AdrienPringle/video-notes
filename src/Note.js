@@ -12,7 +12,6 @@ class Note extends Component {
 			content: content,
 			duration: endTime - startTime || 5,
 		};
-
 		this.toggleEdit = this.toggleEdit.bind(this);
 		this.handleStop = this.handleStop.bind(this);
 	}
@@ -26,6 +25,7 @@ class Note extends Component {
 	// 		changeNote({ startTime, endTime: startTime + duration, content });
 	// 	}
 	// }, [isEdit]);
+
 	formatTime(seconds) {
 		let startChar = 0;
 		if (seconds > 3600) startChar = 2;
@@ -59,32 +59,40 @@ class Note extends Component {
 
 		return isEdit ? (
 			<Draggable
-				onStop={this.handleStop}
+				onStop={() => this.handleStop()}
 				bounds="parent"
 				defaultPosition={startPosition}
+				cancel="textarea"
 			>
 				<form onSubmit={this.toggleEdit} className="video-note">
-					<label htmlFor="noteContent">note</label>
-					<br />
-					<input
+					<textarea
+						className="content-input"
 						type="text"
 						name="noteContent"
+						placeholder="note..."
 						value={content}
 						onChange={(e) => this.setState({ content: e.target.value })}
 					/>
-					<br />
-					<label htmlFor="duration">duration</label>
-					<br />
-					<input
-						type="number"
-						name="duration"
-						value={duration}
-						onChange={(e) =>
-							this.setState({ duration: parseFloat(e.target.value) })
-						}
-					/>
-					<br />
-					<input type="submit" value="create" />
+					<div className="time-input">
+						{/* <div>
+							Start:{" "}
+							<span className="purple">{this.formatTime(startTime)}</span>
+						</div> */}
+						<input className="dialogue-button" type="submit" value="create" />
+						<div>
+							<label htmlFor="duration">Duration (s): </label>
+							<input
+								className="number-input purple"
+								size="1"
+								type="number"
+								name="duration"
+								value={duration}
+								onChange={(e) =>
+									this.setState({ duration: parseFloat(e.target.value) })
+								}
+							/>
+						</div>
+					</div>
 				</form>
 			</Draggable>
 		) : (
@@ -93,13 +101,20 @@ class Note extends Component {
 				bounds="parent"
 				defaultPosition={startPosition}
 			>
-				<div className="video-note">
-					<h2>
-						{this.formatTime(startTime)}-{this.formatTime(startTime + duration)}
-					</h2>
-					<div>{content}</div>
-					<button onClick={this.toggleEdit}>edit</button>
-					<button onClick={remove}>remove</button>
+				<div className="video-note clickable" onDoubleClick={this.toggleEdit}>
+					<div className="content-input">{content}</div>
+					<span className="time-input ">
+						<div>
+							<span className="purple">{this.formatTime(startTime)}</span>
+							{" - "}
+							<span className="purple">
+								{this.formatTime(startTime + duration)}
+							</span>
+						</div>
+						<button className="dialogue-button" onClick={remove}>
+							remove
+						</button>
+					</span>
 				</div>
 			</Draggable>
 		);
