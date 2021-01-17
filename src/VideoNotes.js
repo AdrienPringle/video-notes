@@ -9,8 +9,18 @@ class VideoNotes extends Component {
 
 	constructor(props) {
 		super(props);
-		let { videoEl } = props;
-		this.state = { notes: [], iterator: 0, videoBox: {}, videoTime: 0 };
+		let { videoEl, data } = props;
+
+		const initialNotes = data.notes
+			? data.notes.map((n) => ({ isEdit: false, ...n }))
+			: [];
+		this.state = {
+			notes: initialNotes,
+			iterator: data.iterator || 0,
+			videoBox: {},
+			videoTime: 0,
+		};
+
 		this.refs = {};
 
 		this.props.videoEl.ontimeupdate = () => {

@@ -1,3 +1,6 @@
+/*global chrome*/
+// ^ im so done this line took like 4 hours to find
+
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
@@ -11,12 +14,23 @@ app.id = "root";
 let noteData = {};
 
 function setNoteData(src, data) {
-	noteData[src] = data;
-	console.log(data);
-	// do something here to insert data to backend
+	//Save the data to local storage
+	var dataObj = {};
+	dataObj[src] = data;
+	chrome.storage.local.sync(dataObj, function () {
+		if (!chrome.runtime.lastError) {
+			console.log("Saved", src, data);
+		}
+	});
 }
-function getNoteData(src) {
-	return noteData[src];
+async function getNoteData(src) {
+	// return noteData[src];
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.sync(src, function (result) {
+			console.log("returned data for " + src);
+			resolve(result[src]);
+		});
+	});
 }
 
 window.addEventListener("load", function () {
@@ -26,13 +40,19 @@ window.addEventListener("load", function () {
 
 	const container = document.createElement("div");
 	app.appendChild(container);
-	videos.forEach((v) => {
-		const src = v.src;
-		if (!(src in noteData)) noteData[src] = {};
-
+	videos.forEach(async (v) => {
+		// const src = v.src;
+		const src = window.location.href;
+		// if (!(src in noteData)) noteData[src] = {};
+		const noteData = await getNoteData(src);
+		console.log(src, noteData);
 		//render notes for every video
 		ReactDOM.render(
-			<VideoNotes videoEl={v} setData={(data) => setNoteData(src, data)} />,
+			<VideoNotes
+				videoEl={v}
+				data={noteData}
+				setData={(data) => setNoteData(src, data)}
+			/>,
 			container
 		);
 	});
