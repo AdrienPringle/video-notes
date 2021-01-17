@@ -13,13 +13,13 @@ getUrl = async () => {
 		chrome.tabs.query({ active: true }, (tabs) => {
 			chrome.windows.getCurrent.bind(tabs)(({ id }) => {
 				// console.log(tabs.filter((t) => t.windowId === id)[0].url);
-				resolve(tabs.filter((t) => t.windowId === id)[0].url);
+				resolve(tabs.filter((t) => t.windowId === id)[0]);
 			});
 		});
 	});
 };
 
-getUrl().then((url) => {
+getUrl().then(({ url, id: tabId }) => {
 	chrome.storage.sync.get(null, (dataObj) => {
 		let notesList = document.getElementById("notes");
 		const keys = Object.keys(dataObj);
@@ -129,15 +129,15 @@ getUrl().then((url) => {
 
 			chrome.storage.sync.set(dataObj, function () {
 				if (!chrome.runtime.lastError) {
-					console.log("Saved", src, data);
+					console.log("Saved", url, data);
 				}
 			});
 
-			chrome.runtime.sendMessage({ url: url, action: "add" }, (_) => {
+			chrome.tabs.sendMessage(tabId, { url: url, action: "add" }, (_) => {
 				console.log("Added Note at url: '" + url);
 				// location.reload();
 			});
-			location.reload();
+			// location.reload();
 		});
 	};
 });

@@ -23,9 +23,9 @@ const setNoteData = (src, data) => {
 			console.log("Saved", src, data);
 		}
 	});
-}
+};
 
-const getNoteData = async(src) => {
+const getNoteData = async (src) => {
 	// return noteData[src];
 	return new Promise((resolve, reject) => {
 		chrome.storage.sync.get(src, function (result) {
@@ -37,30 +37,46 @@ const getNoteData = async(src) => {
 
 window.addEventListener("load", function () {
 	if (viewport) viewport.prepend(app);
-
 	// const videos = document.querySelectorAll("video");
 	const videos = [document.querySelector("video")]; // hack to only get first, would be nice to have many but src problems r rough
 
 	const container = document.createElement("div");
 	app.appendChild(container);
-	videos.forEach(async (v) => {
-		// const src = v.src;
-		const src = window.location.href;
+	const render = () => {
+		videos.forEach(async (v) => {
+			// const src = v.src;
+			const src = window.location.href;
 
-		const noteData = await getNoteData(src);
-		console.log(src, noteData);
+			const noteData = await getNoteData(src);
+			console.log(src, noteData);
 
-		//render notes for every video
-		ReactDOM.render(
-			<VideoNotes
-				videoEl={v}
-				data={noteData}
-				setData={(data) => setNoteData(src, data)}
-			/>,
-			container
-		);
+			//render notes for every video
+			ReactDOM.render(
+				<VideoNotes
+					videoEl={v}
+					data={noteData}
+					setData={(data) => setNoteData(src, data)}
+				/>,
+				container
+			);
+		});
+		console.log("added videos ", videos);
+	};
+
+	//update state on note add
+	chrome.runtime.onMessage.addListener(function (
+		request,
+		sender,
+		sendResponse
+	) {
+		console.log(request, sender);
+		if (request.action == "add" && request.url == window.location.href) {
+			render();
+			sendResponse({ farewell: "goodbye" });
+		}
 	});
-	console.log("added videos ", videos);
+
+	render();
 });
 
 document.body.appendChild(app);

@@ -1,4 +1,5 @@
 /*global ResizeObserver*/
+
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./VideoNotes.css";
@@ -27,6 +28,20 @@ class VideoNotes extends Component {
 		this.resizeObserver = undefined;
 
 		this.isNoteVisible = this.isNoteVisible.bind(this);
+	}
+
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		const { data } = this.props;
+		if (data.notes.length != prevProps.data.notes.length) {
+			const initialNotes =
+				data && data.notes
+					? data.notes.map((n) => ({ isEdit: false, ...n }))
+					: [];
+			this.setState({
+				notes: initialNotes,
+				iterator: (data && data.notes && data.iterator) || 0,
+			});
+		}
 	}
 
 	componentDidMount() {
