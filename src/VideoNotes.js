@@ -1,3 +1,4 @@
+/*global ResizeObserver*/
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./VideoNotes.css";
@@ -18,17 +19,39 @@ class VideoNotes extends Component {
 		this.state = {
 			notes: initialNotes,
 			iterator: (data && data.notes && data.iterator) || 0,
-			videoBox: {},
+			videoBox: videoEl.getBoundingClientRect(),
 			videoTime: 0,
 		};
 
 		this.refs = {};
-
-		this.props.videoEl.ontimeupdate = () => {
-			this.setState({ videoTime: videoEl.currentTime });
-		};
+		this.resizeObserver = undefined;
 
 		this.isNoteVisible = this.isNoteVisible.bind(this);
+	}
+
+	componentDidMount() {
+		const { videoEl } = this.props;
+		const setBox = () =>
+			this.setState({
+				videoBox: videoEl.getBoundingClientRect(),
+			});
+		this.resizeObserver = new ResizeObserver(setBox);
+
+		//observe size change
+		this.resizeObserver.observe(this.props.videoEl);
+
+		//observe likely position/size change
+		window.addEventListener("resize", setBox);
+		videoEl.onplay = setBox;
+
+		//observe video time change
+		videoEl.ontimeupdate = () => {
+			this.setState({ videoTime: videoEl.currentTime });
+		};
+	}
+	componentWillUnmount() {
+		window.removeEventListener("resize");
+		this.resizeObserver && this.resizeObserver.disconnect();
 	}
 
 	getFormattedData = () => {
@@ -36,8 +59,20 @@ class VideoNotes extends Component {
 		return {
 			iterator: iterator,
 			notes: notes.map((n) => {
-				const { id, content, startTime, endTime, position } = n;
-				return { id, content, startTime, endTime, position };
+				const {
+					id,
+					content = "",
+					startTime = 0,
+					endTime,
+					position = { x: 0, y: 0 },
+				} = n;
+				return {
+					id,
+					content,
+					startTime,
+					endTime: endTime || startTime + 5,
+					position,
+				};
 			}),
 		};
 	};
@@ -47,7 +82,12 @@ class VideoNotes extends Component {
 		const { videoEl, setData } = this.props;
 		let newNotes = [
 			...notes,
-			{ id: iterator, startTime: videoEl.currentTime, isEdit: true },
+			{
+				id: iterator,
+				startTime: videoEl.currentTime,
+				isEdit: true,
+				position: { x: Math.random(), y: Math.random() },
+			},
 		];
 		this.setState({ notes: newNotes, iterator: iterator + 1 }, () =>
 			setData(this.getFormattedData())
@@ -111,7 +151,7 @@ class VideoNotes extends Component {
 		if (!position) return undefined;
 		return {
 			x: position.x * (parentBox.width - 180),
-			y: position.y * (parentBox.height - 202),
+			y: position.y * (parentBox.height - 202.51),
 		};
 	}
 
@@ -129,10 +169,9 @@ class VideoNotes extends Component {
 	}
 
 	render() {
-		const { notes } = this.state;
+		const { notes, videoBox } = this.state;
 		const { videoEl } = this.props;
 
-		const videoBox = videoEl.getBoundingClientRect();
 		let { top, left, width, height } = videoBox;
 		let style = {
 			top: top + "px",

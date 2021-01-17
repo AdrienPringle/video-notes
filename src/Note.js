@@ -12,10 +12,13 @@ class Note extends Component {
 			content: content,
 			duration: endTime - startTime || 5,
 		};
+		this.contentRef = {};
 		this.toggleEdit = this.toggleEdit.bind(this);
 		this.handleStop = this.handleStop.bind(this);
 	}
-
+	componentDidMount() {
+		this.contentRef && this.contentRef.focus();
+	}
 	// const [isEdit, setIsEdit] = useState(true);
 	// const [content, setContent] = useState("");
 	// const [duration, setDuration] = useState(5);
@@ -27,6 +30,10 @@ class Note extends Component {
 	// }, [isEdit]);
 
 	formatTime(seconds) {
+		if (isNaN(seconds)) {
+			return "__";
+		}
+
 		let startChar = 0;
 		if (seconds > 3600) startChar = 2;
 		if (seconds > 36000) startChar = 3;
@@ -43,12 +50,14 @@ class Note extends Component {
 		const newEdit = !isEdit;
 		this.setState({ isEdit: newEdit });
 
-		changeNote({
-			startTime: startTime,
-			endTime: startTime + duration,
-			content: content,
-			isEdit: newEdit,
-		});
+		if (!newEdit) {
+			changeNote({
+				startTime: startTime,
+				endTime: startTime + duration,
+				content: content,
+				isEdit: newEdit,
+			});
+		}
 	}
 	handleStop(event) {
 		this.props.changeNote();
@@ -61,7 +70,7 @@ class Note extends Component {
 			<Draggable
 				onStop={() => this.handleStop()}
 				bounds="parent"
-				defaultPosition={startPosition}
+				position={startPosition}
 				cancel="textarea"
 			>
 				<form onSubmit={this.toggleEdit} className="video-note">
@@ -72,6 +81,9 @@ class Note extends Component {
 						placeholder="note..."
 						value={content}
 						onChange={(e) => this.setState({ content: e.target.value })}
+						ref={(input) => {
+							this.contentRef = input;
+						}}
 					/>
 					<div className="time-input">
 						{/* <div>
@@ -99,7 +111,7 @@ class Note extends Component {
 			<Draggable
 				onStop={this.handleStop}
 				bounds="parent"
-				defaultPosition={startPosition}
+				position={startPosition}
 			>
 				<div className="video-note clickable" onDoubleClick={this.toggleEdit}>
 					<div className="content-input">{content}</div>
