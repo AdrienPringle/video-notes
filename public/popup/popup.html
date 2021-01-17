@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-    <form>
-      <label for="videoUrl">Video Url: </label>
-      <textarea class="form-control" id="vidurl"></textarea>
+	<head>
+		<link rel="stylesheet" href="popup.css" />
+	</head>
+	<body>
+		<div>
+			<label for="videoUrl">Video Url: </label>
+			<textarea class="form-control" id="vidurl"></textarea>
 
-      <br /><br />
-      <label for="noteText">Note:</label><br />
-      <textarea class="form-control" id="note-value"></textarea>
+			<br /><br />
+			<label for="noteText">Note:</label><br />
+			<textarea class="form-control" id="note-value"></textarea>
 
-      <br /><br />
-      <label for="startTime">Start time:</label>
-      <input type="number" name="startTime" id="startField" /><br /><br />
+			<br /><br />
+			<label for="startTime">Start time:</label>
+			<input type="number" name="startTime" id="startField" /><br /><br />
 
-      <label for="endTime">End time:</label><br />
-      <input type="number" name="endTime" id="endField" /><br /><br />
+			<label for="endTime">End time:</label><br />
+			<input type="number" name="endTime" id="endField" /><br /><br />
 
-      <button class="btn create" id="create">Create</button>
-      <br />
+			<button class="btn create" id="create">Create</button>
+			<br />
 
-      <div id="notes-container">
-        <h3>Existing Notes</h3>
+			<div id="notes-container">
+				<h3>Existing Notes</h3>
 
-        <ul id="notes">
-          <!--<ul id="notes2"></ul>-->
-        </ul>
+				<ul id="notes">
+					<!--<ul id="notes2"></ul>-->
+				</ul>
 
-        <h4>Delete All Notes</h4>
-        <button class="btn delete" id="delete">Delete All</button>
-        <h4>Clear Page's Notes</h4>
-        <button class="btn clear" id="clear">Clear Page</button>
-      </div>
+				<h4>Delete All Notes</h4>
+				<button class="btn delete" id="delete">Delete All</button>
+				<h4>Clear Page's Notes</h4>
+				<button class="btn clear" id="clear">Clear Page</button>
+			</div>
 
-      <script src="popup.js"></script>
-    </form>
-  </body>
+			<script defer src="popup.js"></script>
+		</div>
+	</body>
 </html>
